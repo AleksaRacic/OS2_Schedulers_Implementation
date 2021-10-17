@@ -13,6 +13,7 @@ class PCB;
 class Thread;
 
 #include <dos.h>
+#include "SCHEDULE.H"
 
 #define NULL 0
 
@@ -33,22 +34,20 @@ void tick();
 
 class Kernel {
 public:
-
+	static volatile int preemptive;
 	static volatile PCB *running, *mainPCB, *idle;
-
 	static Thread* idleT; //Videti zasto ne moze idleThread
-
 	static volatile int int_locked, switch_context_req_disp, switch_context_req_timer;
-
 	static void dispatch();
-	static void boot();
+	static void boot(Sched, int);
 	static void restore();
 
 	Kernel();
 	virtual ~Kernel();
 private:
 
-	static void interrupt myTimer(...);
+	static void interrupt myTimerPR(...);
+	static void interrupt myTimerNP(...);
 	static volatile void interrupt (*oldTimer)(...);
 };
 #endif /* KERNEL_H_ */

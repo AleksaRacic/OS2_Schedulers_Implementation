@@ -25,21 +25,20 @@ public:
 	static ID max_id;
 
 	PCB(Thread*, StackSize, Time);
-
 	virtual ~PCB();
+
 	Status my_status;
 	StackSize stack_size;
-	static PCB* getPCBById(int);
-
-	static int getRunningId();
 
 	unsigned *stack_pointer;
 	unsigned int sp, ss, bp;
 
-	Time processorTime;
-	Time time_left;
-	Time blocked_time;
-
+	Time processorTime, time_took, time_left, blocked_time;
+	int priority;
+	void updatePTime() volatile;
+	int getPriority();
+	void setPriority(int);
+	Time getProcessorTime();
 	int getID()volatile;
 
 	static PCBList* allPCB;
@@ -54,16 +53,15 @@ public:
 	void run()volatile;
 	void setFinished()volatile;
 	void unblockWaitList()volatile;
-	Status getStatus()volatile;
-
+	Status getStatus() volatile;
+	static PCB* getPCBById(int);
+	static int getRunningId();
 	static int compareIDWrapper(PCB*);
 	static int resetBlockedWrapper(PCB*);
-
 	Thread* getThread();
-
 	int decProcessorTime()volatile;
 	int decBlockedTime()volatile;
-
+	void incRunningTime();
 	void resetMyTime()volatile;
 
 	PCBList* getWaitList();

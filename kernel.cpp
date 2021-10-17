@@ -21,6 +21,7 @@ volatile PCB* Kernel::idle = NULL;
 volatile PCB* Kernel::running = NULL;
 volatile PCB* Kernel::mainPCB = NULL;
 volatile int Kernel::int_locked = 0;
+volitale int Kernel::preemptive = 0;
 
 unsigned int tsp, tss, tbp;
 
@@ -32,7 +33,9 @@ void Kernel::dispatch(){
 #endif
 	switch_context_req_disp = 1;
 	if(!int_locked){//da se ne bi zvao tajmer ako se pozove ispatch tokom locka
-		myTimer();
+		asm{
+			int 0x08
+		}
 	}
 #ifndef BCC_BLOCK_IGNORE
 	unlock();
@@ -40,8 +43,7 @@ void Kernel::dispatch(){
 
 }
 
-void interrupt Kernel::myTimer(...){
-	int time_left;
+void interrupt Kernel::myTimerPR(...){
 	if(!switch_context_req_disp || (int_locked && switch_context_req_disp)){
 		tick();
 		(*oldTimer)();
@@ -100,20 +102,84 @@ void interrupt Kernel::myTimer(...){
 	}
 }
 
-void Kernel::boot(){
+void interrupt Kernel::myTimerNP(...){
+	if(!switch_context_req_disp){
+			tick();
+			(*oldTimer)();
+			//ovde printa koji pcb je aktivan?
+			KernelSem::decAllSem();
+	}
+	if(switch_context_req_disp){
+			switch_context_req_disp = 0;
+			PCB *next_thread = NULL;
+			#ifdef KERNELDEBUG
+			synchronizedPrintf("_%d->",running->getID());
+			#endif
+			if((running->getStatus() == READY || running->getStatus() == RUNNING) && running != idle)
+				Scheduler::put((PCB*)running);
+
+			if((next_thread = Scheduler::get()) == NULL)
+				next_thread = (PCB*) idle;
+
+			if(running->getStatus() == FINISHED){
+				delete running;
+			}
+			else
+			{
+			#ifndef BCC_BLOCK_IGNORE
+			asm{
+				mov tsp, sp
+				mov tss, ss
+				mov tbp, bp
+				}
+			#endif
+
+			running->sp = tsp;
+			running->ss = tss;
+			running->bp = tbp;
+			}
+
+
+			running = next_thread;
+			running->resetMyTime();
+
+			tsp = running->sp;
+			tss = running->ss;
+			tbp = running->bp;
+
+			#ifdef KERNELDEBUG
+			synchronizedPrintf("%d\n",running->getID());
+			#endif
+
+			#ifndef BCC_BLOCK_IGNORE
+			asm{
+				mov sp, tsp
+				mov ss, tss
+				mov bp, tbp
+			}
+			#endif
+		}
+}
+
+
+void Kernel::boot(Sched sched, int pre){
 	#ifndef BCC_BLOCK_IGNORE
 	lock();
 	oldTimer = getvect(0x08);
-	setvect(0x08, myTimer);
+	if(pre){
+		setvect(0x08, myTimerPR);
+	}else{
+		setvect(0x08, myTimerNP)
+	}
 	#endif
+
+	Scheduler::setScheduler(sched);
 
 	PCB::mainInstance();
 	running = mainPCB;
 
 	idleT = new idleThread();
 	idle = idleT->myPCB;
-
-	//dodati semafore i ostalo
 
 	#ifndef BCC_BLOCK_IGNORE
 	unlock();

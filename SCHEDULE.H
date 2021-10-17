@@ -9,10 +9,13 @@ class PCB;
 #define PCBList LinkedList<PCB*>
 #include "list.h"
 
+typedef enum {s_FCFS, s_SJF, s_PRF} Sched;
+
 class Scheduler{
 public:
 	static void put (PCB *);
 	static PCB* get ();
+	static void setScheduler(Sched);
 	friend class PCB;
 
 private:
@@ -39,6 +42,15 @@ private:
 			PCB* get ();
 			PCBList* myList;
 		};
+
+	class PRF : public BaseScheduler{
+			public:
+				PRF();
+				virtual ~PRF();
+				void put(PCB *);
+				PCB* get ();
+				PCBList* myList;
+			};
 
 	static BaseScheduler* myScheduler;
 };

@@ -12,8 +12,9 @@
 
 #include <STDIO.H>
 
-Thread::Thread(StackSize stackSize, Time timeSlice) {
+Thread::Thread(StackSize stackSize = defaultStackSize, Time timeSlice = defaultTimeSlice, int priority = defaultPriority) {
 	myPCB = new PCB(this, stackSize, timeSlice);
+	myPCB->setPriority(priority);
 }
 
 Thread::~Thread() {
@@ -22,6 +23,7 @@ Thread::~Thread() {
 }
 
 void dispatch(){
+	Kernel::running->updatePTime();
 	Kernel::dispatch(); //videti hoce li ovo praviti problem kasnje
 }
 
@@ -91,10 +93,11 @@ Thread* Thread::clone()const{
 
 void Thread::waitForForkChildren(){
 	for(int i = 0; i < Kernel::running->childreen_no; i++){
-		//printf("Pre wait\n");
 		Kernel::running->getSemaphore()->wait(0);
-		//printf("%d ", i);
-		//printf("%d\n", Kernel::running->childreen_no);
 	}
 	Kernel::running->deleteSem();
+}
+
+int Thread::getPriority(){
+	return myPCB->getPriority();
 }

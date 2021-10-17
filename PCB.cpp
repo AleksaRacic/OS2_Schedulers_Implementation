@@ -25,6 +25,8 @@ processorTime(time_slice), my_status(CREATED), blocked_time(0), myID(max_id++), 
 	allPCB->push_back(this);
 	time_left = time_slice;
 
+	priority = defaultPriority;
+
 	myParent = NULL;
 
 	sem =  new Semaphore(0);
@@ -223,6 +225,7 @@ Status PCB::getStatus()volatile{
 }
 
 void PCB::resetMyTime()volatile{
+	time_took = 0;
 	time_left = processorTime;
 	my_status = RUNNING;
 }
@@ -313,3 +316,24 @@ void PCB::signalParent() volatile {
 		myParent->sem->signal();
 	}
 }
+
+Time PCB::getProcessorTime(){
+	return processorTime;
+}
+
+int PCB::getPriority(){
+	return priority;
+}
+
+void PCB::setPriority(int pr){
+	priority = pr;
+}
+
+void PCB::incRunningTime(){
+	time_took++;
+}
+
+void PCB::updatePTime() volatile {
+	processorTime = (processorTime + time_took)/2;
+}
+
