@@ -5,8 +5,8 @@
  *      Author: OS1
  */
 
-#ifndef SEMAPHOR_H_
-#define SEMAPHOR_H_
+#ifndef OS2_PROJECT_SEMAPHOR_H_
+#define OS2_PROJECT_SEMAPHOR_H_
 
 #include "KerSem.h"
 
@@ -24,4 +24,4 @@ class Semaphore {
 		KernelSem* myImpl;
 };
 
-#endif /* SEMAPHOR_H_ */
+#endif /* OS2_PROJECT_SEMAPHOR_H_ */

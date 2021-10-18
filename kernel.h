@@ -5,8 +5,8 @@
  *      Author: OS1
  */
 
-#ifndef KERNEL_H_
-#define KERNEL_H_
+#ifndef OS2_PROJECT_KERNEL_H_
+#define OS2_PROJECT_KERNEL_H_
 
 //#include "PCB.h"
 class PCB;
@@ -50,4 +50,4 @@ private:
 	static void interrupt myTimerNP(...);
 	static volatile void interrupt (*oldTimer)(...);
 };
-#endif /* KERNEL_H_ */
+#endif /* OS2_PROJECT_KERNEL_H_ */

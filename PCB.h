@@ -5,8 +5,8 @@
  *      Author: OS1
  */
 
-#ifndef PCB_H_
-#define PCB_H_
+#ifndef OS2_PROJECT_PCB_H_
+#define OS2_PROJECT_PCB_H_
 
 #define MAX_STACK_SIZE 65534 //64KB - 1
 #define PCBList LinkedList<PCB*>
@@ -38,7 +38,7 @@ public:
 	void updatePTime() volatile;
 	int getPriority();
 	void setPriority(int);
-	Time getProcessorTime();
+	Time getProcessorTime()volatile;
 	int getID()volatile;
 
 	static PCBList* allPCB;
@@ -61,7 +61,7 @@ public:
 	Thread* getThread();
 	int decProcessorTime()volatile;
 	int decBlockedTime()volatile;
-	void incRunningTime();
+	void incRunningTime() volatile;
 	void resetMyTime()volatile;
 
 	PCBList* getWaitList();
@@ -89,4 +89,4 @@ private:
 	PCBList* waitList;
 };
 
-#endif /* PCB_H_ */
+#endif /* OS2_PROJECT_PCB_H_ */

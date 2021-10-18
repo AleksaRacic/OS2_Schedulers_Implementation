@@ -12,11 +12,11 @@
 #include "debug.h"
 #include <dos.h>
 
-
 int PCB::max_id = 0;
 PCBList* PCB::allPCB = new PCBList();
 volatile PCB* PCB::retPCB = NULL;
 volatile int PCB::findId = -1;
+
 
 PCB::PCB(Thread *myThread, StackSize stack_size, Time time_slice): myT(myThread),
 processorTime(time_slice), my_status(CREATED), blocked_time(0), myID(max_id++), myParent(NULL), stack_size(stack_size) {
@@ -60,7 +60,7 @@ processorTime(time_slice), my_status(CREATED), blocked_time(0), myID(max_id++), 
 			//fork
 			childreen_no = 0;
 	}else{
-		synchronizedPrintf("MEMFULL: stack"); //ovo doraditi i istestirati
+		synchronizedPrintf("MEMFULL: stack\n"); //ovo doraditi i istestirati
 	}
 }
 
@@ -317,7 +317,7 @@ void PCB::signalParent() volatile {
 	}
 }
 
-Time PCB::getProcessorTime(){
+Time PCB::getProcessorTime() volatile {
 	return processorTime;
 }
 
@@ -329,7 +329,7 @@ void PCB::setPriority(int pr){
 	priority = pr;
 }
 
-void PCB::incRunningTime(){
+void PCB::incRunningTime() volatile {
 	time_took++;
 }
 

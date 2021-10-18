@@ -3,6 +3,8 @@
 
 Scheduler::BaseScheduler* Scheduler::myScheduler = NULL;
 
+extern int synchronizedPrintf(const char *format, ...);
+
 int testTimeSlice(PCB* pcb1, PCB* pcb2){
 	return pcb1->getProcessorTime() > pcb2->getProcessorTime();
 }

@@ -1,5 +1,5 @@
-#ifndef THREAD_H_
-#define THREAD_H_
+#ifndef OS2_PROJECT_THREAD_H_
+#define OS2_PROJECT_THREAD_H_
 
 typedef unsigned long StackSize;
 const StackSize defaultStackSize = 4096;
@@ -40,4 +40,4 @@ private:
 
 void dispatch ();
 
-#endif /* THREAD_H_ */
+#endif /* OS2_PROJECT_THREAD_H_ */

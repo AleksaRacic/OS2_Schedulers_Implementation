@@ -5,8 +5,8 @@
  *      Author: OS1
  */
 
-#ifndef IVTENTRY_H_
-#define IVTENTRY_H_
+#ifndef OS2_PROJECT_IVTENTRY_H_
+#define OS2_PROJECT_IVTENTRY_H_
 
 #define NULL 0
 
@@ -30,4 +30,4 @@ private:
 	KernelEv* kernelEvent;
 };
 
-#endif /* IVTENTRY_H_ */
+#endif /* OS2_PROJECT_IVTENTRY_H_ */

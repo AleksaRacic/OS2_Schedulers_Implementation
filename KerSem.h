@@ -5,8 +5,8 @@
  *      Author: OS1
  */
 
-#ifndef KERSEM_H_
-#define KERSEM_H_
+#ifndef OS2_PROJECT_KERSEM_H_
+#define OS2_PROJECT_KERSEM_H_
 
 class PCB;
 #define SemList LinkedList<KernelSem*>
@@ -37,4 +37,4 @@ private:
 	static int decAllWrapper(KernelSem*);
 };
 
-#endif /* KERSEM_H_ */
+#endif /* OS2_PROJECT_KERSEM_H_ */

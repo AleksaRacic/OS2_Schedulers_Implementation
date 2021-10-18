@@ -12,7 +12,7 @@
 
 #include <STDIO.H>
 
-Thread::Thread(StackSize stackSize = defaultStackSize, Time timeSlice = defaultTimeSlice, int priority = defaultPriority) {
+Thread::Thread(StackSize stackSize, Time timeSlice, int priority) {
 	myPCB = new PCB(this, stackSize, timeSlice);
 	myPCB->setPriority(priority);
 }

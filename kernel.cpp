@@ -21,7 +21,7 @@ volatile PCB* Kernel::idle = NULL;
 volatile PCB* Kernel::running = NULL;
 volatile PCB* Kernel::mainPCB = NULL;
 volatile int Kernel::int_locked = 0;
-volitale int Kernel::preemptive = 0;
+volatile int Kernel::preemptive = 0;
 
 unsigned int tsp, tss, tbp;
 
@@ -49,6 +49,7 @@ void interrupt Kernel::myTimerPR(...){
 		(*oldTimer)();
 		switch_context_req_timer = running->decProcessorTime();
 		KernelSem::decAllSem();
+		running->incRunningTime();
 	}
 
 	if(!int_locked && (switch_context_req_timer || switch_context_req_disp)){
@@ -58,8 +59,10 @@ void interrupt Kernel::myTimerPR(...){
 		#ifdef KERNELDEBUG
 		synchronizedPrintf("_%d->",running->getID());
 		#endif
-		if((running->getStatus() == READY || running->getStatus() == RUNNING) && running != idle)
+		if((running->getStatus() == READY || running->getStatus() == RUNNING) && running != idle){
+			running->updatePTime();
 			Scheduler::put((PCB*)running);
+		}
 
 		if((next_thread = Scheduler::get())== NULL)
 			next_thread = (PCB*) idle;
@@ -106,8 +109,8 @@ void interrupt Kernel::myTimerNP(...){
 	if(!switch_context_req_disp){
 			tick();
 			(*oldTimer)();
-			//ovde printa koji pcb je aktivan?
 			KernelSem::decAllSem();
+			running->incRunningTime();
 	}
 	if(switch_context_req_disp){
 			switch_context_req_disp = 0;
@@ -115,8 +118,11 @@ void interrupt Kernel::myTimerNP(...){
 			#ifdef KERNELDEBUG
 			synchronizedPrintf("_%d->",running->getID());
 			#endif
-			if((running->getStatus() == READY || running->getStatus() == RUNNING) && running != idle)
+			if((running->getStatus() == READY || running->getStatus() == RUNNING) && running != idle){
+				running->updatePTime();
 				Scheduler::put((PCB*)running);
+			}
+
 
 			if((next_thread = Scheduler::get()) == NULL)
 				next_thread = (PCB*) idle;
@@ -169,7 +175,7 @@ void Kernel::boot(Sched sched, int pre){
 	if(pre){
 		setvect(0x08, myTimerPR);
 	}else{
-		setvect(0x08, myTimerNP)
+		setvect(0x08, myTimerNP);
 	}
 	#endif
 

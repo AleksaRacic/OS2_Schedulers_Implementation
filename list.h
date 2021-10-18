@@ -1,5 +1,5 @@
-#ifndef LIST_H_
-#define LIST_H_
+#ifndef OS2_PROJECT_LIST_H_
+#define OS2_PROJECT_LIST_H_
 
 #define NULL 0
 
@@ -166,12 +166,13 @@ public:
 	}
 
 	void insert_priority(int (*func)(T, T) , const T& e) {
-		Iterator it;
-		for (it = begin(); it != end(); ++it) {
-				if(func((*it), e)) break;
+		for (Iterator it = begin(); it != end(); ++it) {
+				if(func((*it), e)){
+					insert_before(it, e);
+					return;
+				}
 			}
-		if(it == end()) insert_after(it, e);
-		else insert_before(it, e);
+		push_back(e);
 		}
 
 protected:
@@ -251,4 +252,4 @@ void LinkedList<T>::applyAll(int (*func)(T)) {
 	}
 
 }
-#endif /* LIST_H_ */
+#endif /* OS2_PROJECT_LIST_H_ */

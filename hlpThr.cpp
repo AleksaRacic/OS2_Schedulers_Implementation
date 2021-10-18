@@ -2,7 +2,7 @@
 
 extern int userMain(int, char**);
 
-uMainT::uMainT(int argc_, char** argv_):Thread(), argc(argc_), argv(argv_) {}
+uMainT::uMainT(int argc_, char** argv_):Thread(256, 2, 10), argc(argc_), argv(argv_) {}
 
 uMainT::~uMainT() {
 	// TODO Auto-generated destructor stub

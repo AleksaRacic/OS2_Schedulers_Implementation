@@ -5,8 +5,8 @@
  *      Author: OS1
  */
 
-#ifndef KERNELEV_H_
-#define KERNELEV_H_
+#ifndef OS2_PROJECT_KERNELEV_H_
+#define OS2_PROJECT_KERNELEV_H_
 
 class PCB;
 typedef unsigned char IVTNo;
@@ -23,4 +23,4 @@ private:
 	PCB* myPCB; // thread that created object, only this thread can be blocked
 };
 
-#endif /* KERNELEV_H_ */
+#endif /* OS2_PROJECT_KERNELEV_H_ */

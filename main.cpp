@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "kernel.h"
 #include "hlpThr.h"
@@ -10,19 +11,25 @@ int main(int argc, char* argv[]){
 	Sched sched;
 	int preemtive = 0;
 	if(argc < 2){
-		synchronizedPrintf("Argument error\n");
+		synchronizedPrintf("Argument error!\n");
+		return -1;
 	}
-	if(strcmp(argv[1], "FCFS")){
+
+	if(strcmp(argv[1], "FCFS") == 0){
 		sched = s_FCFS;
 	}
-	else if(strcmp(argv[1], "SJF"))
+	else if(strcmp(argv[1], "SJF") == 0)
 	{
 		sched = s_SJF;
 	}
-	else if(strcmp(argv[1], "PRF"))
+	else if(strcmp(argv[1], "PRF") == 0)
 		{
 			sched = s_PRF;
 		}
+	else{
+		synchronizedPrintf("Scheduler error!\n");
+		return -1;
+	}
 	if(argc > 2){
 		preemtive = atoi(argv[2]);
 	}
